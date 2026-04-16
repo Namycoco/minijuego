@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Máquina Arcade</title>
+
+<style>
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+   background: url("imagen1.jpg") center center / cover no-repeat fixed;
+  overflow: hidden;
+  image-rendering: auto;
+}
+
+/* fondo futurista */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+
+  background: url("imagen1.jpg") center/cover no-repeat;
+
+  transform: scale(1.05); /* 👈 elimina bordes feos */
+  filter: brightness(0.7);
+
+  z-index: -1;
+
+}
+
+/* máquina */
+.maquina {
+  width: 90%;
+  max-width: 800px;
+
+  background: rgba(0,0,0,0.6);
+  border: 2px solid cyan;
+  border-radius: 25px;
+
+  box-shadow: 0 0 25px cyan;
+
+  padding: 30px;
+  text-align: center;
+  backdrop-filter: blur(10px);
+}
+
+/* título */
+h1 {
+  color: cyan;
+  font-size: 42px;
+  letter-spacing: 3px;
+  text-shadow: 0 0 10px cyan;
+}
+
+/* marcador */
+.marcador {
+  display: flex;
+  justify-content: space-around;
+  margin: 20px 0;
+  color: white;
+  font-size: 18px;
+}
+
+/* pantalla */
+.pantalla {
+  background: black;
+  border: 2px solid cyan;
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 15px;
+
+  color: lime;
+  font-size: 20px;
+  min-height: 60px;
+
+  box-shadow: inset 0 0 15px cyan;
+}
+
+/* botones */
+.botones {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.boton {
+  padding: 15px 25px;
+  font-size: 18px;
+
+  border: 2px solid cyan;
+  background: transparent;
+  color: cyan;
+
+  cursor: pointer;
+  border-radius: 10px;
+
+  transition: 0.2s;
+  text-transform: uppercase;
+}
+
+.boton:hover {
+  background: cyan;
+  color: black;
+  box-shadow: 0 0 20px cyan;
+  transform: scale(1.1);
+}
+
+/* animación */
+.efecto {
+  animation: flash 0.3s ease;
+}
+
+@keyframes flash {
+  0% { transform: scale(0.9); opacity: 0.2; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="maquina">
+
+  <h1>⚡ BATALLA ARCADE ⚡</h1>
+
+  <div class="marcador">
+    <div>👤 JUGADOR: <span id="jugador">0</span></div>
+    <div>🤖 MÁQUINA: <span id="maquina">0</span></div>
+    <div>🤝 EMPATES: <span id="empates">0</span></div>
+  </div>
+
+  <div class="pantalla" id="pantalla">
+    INTRODUCE TU MOVIMIENTO...
+  </div>
+
+  <div class="botones">
+    <button class="boton" onclick="jugar(1)">✊ PIEDRA</button>
+    <button class="boton" onclick="jugar(3)">✋ PAPEL</button>
+    <button class="boton" onclick="jugar(2)">✌ TIJERA</button>
+  </div>
+
+</div>
+
+<script>
+
+let puntosJugador = 0;
+let puntosMaquina = 0;
+let empates = 0;
+
+const nombres = {
+  1: "PIEDRA",
+  2: "TIJERA",
+  3: "PAPEL"
+};
+
+function jugar(jugador) {
+
+  let maquina = Math.floor(Math.random() * 3) + 1;
+  let resultado = "";
+
+  if (jugador === maquina) {
+    empates++;
+    resultado = "EMPATE ⚖";
+  }
+  else if (
+    (jugador === 1 && maquina === 2) ||
+    (jugador === 2 && maquina === 3) ||
+    (jugador === 3 && maquina === 1)
+  ) {
+    puntosJugador++;
+    resultado = "¡HAS GANADO! 🔥";
+  }
+  else {
+    puntosMaquina++;
+    resultado = "GANA LA MÁQUINA 💀";
+  }
+
+  document.getElementById("jugador").innerText = puntosJugador;
+  document.getElementById("maquina").innerText = puntosMaquina;
+  document.getElementById("empates").innerText = empates;
+
+  let pantalla = document.getElementById("pantalla");
+
+  pantalla.innerHTML = `
+    TÚ: ${nombres[jugador]} <br>
+    MÁQUINA: ${nombres[maquina]} <br><br>
+    <b>${resultado}</b>
+  `;
+
+  pantalla.classList.remove("efecto");
+  void pantalla.offsetWidth;
+  pantalla.classList.add("efecto");
+}
+
+</script>
+
+</body>
+</html>
